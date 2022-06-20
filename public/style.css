@@ -1,0 +1,7 @@
+#back {
+    z-index: 0;
+    position: absolute;
+}
+#game {
+    z-index: 1;
+}
