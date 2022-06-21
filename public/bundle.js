@@ -269,6 +269,11 @@ var Grid = /*#__PURE__*/function (_Canvas) {
       this.setSizeX();
       this.setSizeY();
       this.draw();
+
+      this._data.setCells([]);
+
+      this._data.setBuffCells([]);
+
       this.fill();
     }
   }, {
@@ -319,11 +324,11 @@ var Grid = /*#__PURE__*/function (_Canvas) {
         canvas.moveTo(0, i * this._data.cellSize);
         canvas.lineWidth = 1;
         canvas.lineTo(this.getWidth(), i * this._data.cellSize);
-        canvas.strokeStyle = "gray";
+        canvas.strokeStyle = "#c0c0c0";
         canvas.lineWidth = 1;
         canvas.moveTo(i * this._data.cellSize, 0);
         canvas.lineTo(i * this._data.cellSize, this.getHeight());
-        canvas.strokeStyle = "gray";
+        canvas.strokeStyle = "#c0c0c0";
       }
 
       this.getCanvas().stroke();
@@ -465,6 +470,7 @@ var Data = /*#__PURE__*/function (_CustomEventTarget) {
     Data._instance = _assertThisInitialized(_this);
     _this._cells = [];
     _this._buffCells = [];
+    _this._historyCells = [];
     _this._numberOfCells = 25;
     _this._cellSize = 20;
     return _this;
@@ -519,6 +525,26 @@ var Data = /*#__PURE__*/function (_CustomEventTarget) {
     key: "getBuffCells",
     value: function getBuffCells() {
       return this._buffCells;
+    }
+  }, {
+    key: "pushToHistory",
+    value: function pushToHistory(cells) {
+      if (this._historyCells.length >= 3) {
+        this._historyCells.pop();
+      }
+
+      this._historyCells.push(cells);
+    }
+  }, {
+    key: "compareCellsInHistory",
+    value: function compareCellsInHistory(buffCells) {
+      for (var i = 0; i < this._historyCells.length; i++) {
+        if (JSON.stringify(buffCells) === JSON.stringify(this._historyCells[i])) {
+          return true;
+        }
+      }
+
+      return false;
     }
   }], [{
     key: "getInstance",
@@ -727,6 +753,8 @@ var ControllerView = /*#__PURE__*/function () {
 
       this._update.on('reset', this._resetView.bind(this));
 
+      this._update.on('identical', this._identicalView.bind(this));
+
       this._numberOfCellsSelect.addEventListener('change', this._onChangeNumberOfCells.bind(this));
 
       this._resetBtn.addEventListener('click', this._onReset.bind(this));
@@ -751,6 +779,14 @@ var ControllerView = /*#__PURE__*/function () {
     key: "_changeNumberOfCells",
     value: function _changeNumberOfCells() {
       this._initConfigurationViewElements();
+    }
+  }, {
+    key: "_identicalView",
+    value: function _identicalView() {
+      this._autoplayBtn.disabled = true;
+      this._pauseBtn.disabled = true;
+      this._stepBtn.disabled = true;
+      this._autoplayBtn.style.opacity = '1';
     }
   }, {
     key: "_randomFill",
@@ -1170,11 +1206,23 @@ var Update = /*#__PURE__*/function (_CustomEventTarget) {
         }
       }
 
+      if (this._data.compareCellsInHistory(buffCells)) {
+        this._cancelRequestAnimFrame()(this._requestAnimationFrameId);
+
+        this._play = false;
+
+        this._fire('identical');
+
+        return;
+      }
+
       for (var _i = 0; _i < this._grid.getSizeX(); _i += 1) {
         for (var _j = 0; _j < this._grid.getSizeY(); _j += 1) {
           cells[_i][_j] = buffCells[_i][_j];
         }
       }
+
+      this._data.pushToHistory(cells.slice());
     }
   }]);
 

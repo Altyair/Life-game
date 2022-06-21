@@ -62,7 +62,6 @@ export default class Update extends CustomEventTarget {
                 }
             }
         }
-
         this._cells();
     };
 
@@ -285,10 +284,20 @@ export default class Update extends CustomEventTarget {
             }
         }
 
+        if (this._data.compareCellsInHistory(buffCells)) {
+            this._cancelRequestAnimFrame()(this._requestAnimationFrameId);
+            this._play = false;
+
+            this._fire('identical');
+            return;
+        }
+
         for (let i = 0; i < this._grid.getSizeX(); i += 1) {
             for (let j = 0; j < this._grid.getSizeY(); j += 1) {
                 cells[i][j] = buffCells[i][j];
             }
         }
+
+        this._data.pushToHistory(cells.slice());
     };
 }

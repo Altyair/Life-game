@@ -30,6 +30,8 @@ export default class Grid extends Canvas {
         this.setSizeX();
         this.setSizeY();
         this.draw();
+        this._data.setCells([]);
+        this._data.setBuffCells([]);
         this.fill();
     }
 
@@ -72,12 +74,12 @@ export default class Grid extends Canvas {
             canvas.moveTo(0, i * this._data.cellSize);
             canvas.lineWidth = 1;
             canvas.lineTo(this.getWidth(), i * this._data.cellSize);
-            canvas.strokeStyle = "gray";
+            canvas.strokeStyle = "#c0c0c0";
 
             canvas.lineWidth = 1;
             canvas.moveTo(i * this._data.cellSize, 0);
             canvas.lineTo(i * this._data.cellSize, this.getHeight());
-            canvas.strokeStyle = "gray";
+            canvas.strokeStyle = "#c0c0c0";
         }
         this.getCanvas().stroke();
     };

@@ -17,6 +17,7 @@ export default class Data extends CustomEventTarget {
 
         this._cells = [];
         this._buffCells = [];
+        this._historyCells = [];
         this._numberOfCells = 25;
         this._cellSize = 20;
     }
@@ -35,6 +36,7 @@ export default class Data extends CustomEventTarget {
         } else {
             this._cellSize = 2;
         }
+
         this._numberOfCells = value;
 
         this._fire('changeNumberOfCells', {value});
@@ -66,5 +68,21 @@ export default class Data extends CustomEventTarget {
 
     getBuffCells() {
         return this._buffCells;
+    }
+
+    pushToHistory(cells) {
+        if (this._historyCells.length >= 3) {
+            this._historyCells.pop();
+        }
+        this._historyCells.push(cells);
+    }
+
+    compareCellsInHistory(buffCells) {
+        for(let i = 0; i < this._historyCells.length; i ++) {
+            if (JSON.stringify(buffCells) === JSON.stringify(this._historyCells[i])) {
+                return true;
+            }
+        }
+        return false;
     }
 }
