@@ -716,41 +716,33 @@ var ControllerView = /*#__PURE__*/function () {
   _createClass(ControllerView, [{
     key: "_findElements",
     value: function _findElements() {
-      this._clearBtn = document.getElementById('clear');
+      this._resetBtn = document.getElementById('clear');
       this._randBtn = document.getElementById('rand');
       this._stepBtn = document.getElementById('step');
       this._autoplayBtn = document.getElementById('autoplay');
-      this._stopBtn = document.getElementById('stop');
+      this._pauseBtn = document.getElementById('pause');
       this._numberOfCellsSelect = document.getElementById('number_of_cells');
     }
   }, {
     key: "_initializeEvents",
     value: function _initializeEvents() {
-      var _this = this;
-
       this._update.on('play', this._playView.bind(this));
 
-      this._numberOfCellsSelect.addEventListener('change', function (event) {
-        _this._update.updateNumberOfCells(parseInt(event.target.value, 10));
-      });
+      this._update.on('pause', this._stopView.bind(this));
 
-      this._clearBtn.addEventListener('click', this._onClear.bind(this));
+      this._update.on('reset', this._resetView.bind(this));
 
-      this._randBtn.addEventListener('click', function () {
-        _this._update.randomFill();
-      });
+      this._numberOfCellsSelect.addEventListener('change', this._onChangeNumberOfCells.bind(this));
 
-      this._stepBtn.addEventListener('click', function () {
-        _this._update.fill();
-      });
+      this._resetBtn.addEventListener('click', this._onReset.bind(this));
 
-      this._autoplayBtn.addEventListener('click', function () {
-        _this._update.autoplay();
-      });
+      this._randBtn.addEventListener('click', this._onRandomFill.bind(this));
 
-      this._stopBtn.addEventListener('click', function () {
-        _this._update.stop();
-      });
+      this._stepBtn.addEventListener('click', this._onFill.bind(this));
+
+      this._autoplayBtn.addEventListener('click', this._onPlay.bind(this));
+
+      this._pauseBtn.addEventListener('click', this._onPause.bind(this));
     }
   }, {
     key: "_playView",
@@ -758,9 +750,44 @@ var ControllerView = /*#__PURE__*/function () {
       this._numberOfCellsSelect.disabled = true;
     }
   }, {
-    key: "_onClear",
-    value: function _onClear(event) {
-      this._update.clear();
+    key: "_stopView",
+    value: function _stopView() {
+      this._numberOfCellsSelect.disabled = false;
+    }
+  }, {
+    key: "_resetView",
+    value: function _resetView() {
+      this._numberOfCellsSelect.disabled = false;
+    }
+  }, {
+    key: "_onChangeNumberOfCells",
+    value: function _onChangeNumberOfCells(event) {
+      this._update.updateNumberOfCells(parseInt(event.target.value, 10));
+    }
+  }, {
+    key: "_onReset",
+    value: function _onReset(event) {
+      this._update.reset();
+    }
+  }, {
+    key: "_onRandomFill",
+    value: function _onRandomFill(event) {
+      this._update.randomFill();
+    }
+  }, {
+    key: "_onFill",
+    value: function _onFill(event) {
+      this._update.fill();
+    }
+  }, {
+    key: "_onPlay",
+    value: function _onPlay(event) {
+      this._update.autoplay();
+    }
+  }, {
+    key: "_onPause",
+    value: function _onPause(event) {
+      this._update.pause();
     }
   }]);
 
@@ -829,6 +856,11 @@ var Update = /*#__PURE__*/function (_CustomEventTarget) {
     _this._game = game;
     _this._play = false;
     _this._canPlay = false;
+
+    _this._cancelRequestAnimFrame = function () {
+      return window.cancelAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelRequestAnimationFrame || window.oCancelRequestAnimationFrame || window.msCancelRequestAnimationFrame || clearTimeout;
+    }();
+
     return _this;
   }
 
@@ -846,16 +878,21 @@ var Update = /*#__PURE__*/function (_CustomEventTarget) {
       this._data.numberOfCells = value;
     }
   }, {
-    key: "clear",
-    value: function clear() {
+    key: "reset",
+    value: function reset() {
+      cancelAnimationFrame(this._requestAnimationFrameId);
+      this._play = false;
+
       this._game.clear();
+
+      this._fire('reset');
     }
   }, {
     key: "fill",
     value: function fill() {
       var cells = this._data.getCells();
 
-      this.clear();
+      this._game.clear();
 
       for (var i = 0; i < this._grid.getSizeX(); i += 1) {
         for (var j = 0; j < this._grid.getSizeY(); j += 1) {
@@ -872,7 +909,7 @@ var Update = /*#__PURE__*/function (_CustomEventTarget) {
     value: function randomFill() {
       var cells = this._data.getCells();
 
-      this.clear();
+      this._game.clear();
 
       for (var i = 0; i < this._grid.getSizeX(); i += 1) {
         for (var j = 0; j < this._grid.getSizeY(); j += 1) {
@@ -892,7 +929,7 @@ var Update = /*#__PURE__*/function (_CustomEventTarget) {
       var play = function play() {
         _this2.fill();
 
-        requestAnimationFrame(play);
+        _this2._requestAnimationFrameId = requestAnimationFrame(play);
       };
 
       if (this._canPlay) {
@@ -903,8 +940,13 @@ var Update = /*#__PURE__*/function (_CustomEventTarget) {
       }
     }
   }, {
-    key: "stop",
-    value: function stop() {}
+    key: "pause",
+    value: function pause() {
+      cancelAnimationFrame(this._requestAnimationFrameId);
+      this._play = false;
+
+      this._fire('pause');
+    }
   }, {
     key: "_fillCell",
     value: function _fillCell(x, y) {

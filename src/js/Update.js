@@ -17,6 +17,15 @@ export default class Update extends CustomEventTarget {
         this._game = game;
         this._play = false;
         this._canPlay = false;
+
+        this._cancelRequestAnimFrame = (function() {
+            return window.cancelAnimationFrame          ||
+                window.webkitCancelRequestAnimationFrame    ||
+                window.mozCancelRequestAnimationFrame       ||
+                window.oCancelRequestAnimationFrame     ||
+                window.msCancelRequestAnimationFrame        ||
+                clearTimeout
+        })();
     }
 
     set canPlay(value) {
@@ -31,14 +40,18 @@ export default class Update extends CustomEventTarget {
         this._data.numberOfCells = value;
     }
 
-    clear () {
+    reset () {
+        cancelAnimationFrame(this._requestAnimationFrameId);
+        this._play = false;
         this._game.clear();
+
+        this._fire('reset');
     };
 
     fill () {
         const cells = this._data.getCells();
 
-        this.clear();
+        this._game.clear();
 
         for (let i = 0; i < this._grid.getSizeX(); i += 1) {
             for (let j = 0; j < this._grid.getSizeY(); j += 1) {
@@ -54,7 +67,7 @@ export default class Update extends CustomEventTarget {
     randomFill () {
         const cells = this._data.getCells();
 
-        this.clear();
+        this._game.clear();
 
         for (let i = 0; i < this._grid.getSizeX(); i += 1) {
             for (let j = 0; j < this._grid.getSizeY(); j += 1) {
@@ -70,7 +83,7 @@ export default class Update extends CustomEventTarget {
     autoplay () {
         const play = () => {
             this.fill();
-            requestAnimationFrame(play);
+            this._requestAnimationFrameId = requestAnimationFrame(play);
         }
 
         if (this._canPlay) {
@@ -80,8 +93,11 @@ export default class Update extends CustomEventTarget {
         }
     };
 
-    stop () {
+    pause () {
+        cancelAnimationFrame(this._requestAnimationFrameId);
+        this._play = false;
 
+        this._fire('pause');
     };
 
     _fillCell (x, y) {
