@@ -1,4 +1,3 @@
-import CONFIG from '../config.json';
 import Canvas from "./Canvas";
 import Data from "./Data";
 

@@ -20,10 +20,10 @@ export default class Update extends CustomEventTarget {
     }
 
     _cancelRequestAnimFrame() {
-        return window.cancelAnimationFrame          ||
+        return window.cancelAnimationFrame              ||
             window.webkitCancelRequestAnimationFrame    ||
             window.mozCancelRequestAnimationFrame       ||
-            window.oCancelRequestAnimationFrame     ||
+            window.oCancelRequestAnimationFrame         ||
             window.msCancelRequestAnimationFrame        ||
             clearTimeout
     }
