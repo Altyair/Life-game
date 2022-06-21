@@ -759,10 +759,7 @@ var ControllerView = /*#__PURE__*/function () {
   }, {
     key: "_changeNumberOfCells",
     value: function _changeNumberOfCells() {
-      this._autoplayBtn.disabled = true;
-      this._pauseBtn.disabled = true;
-      this._resetBtn.disabled = true;
-      this._stepBtn.disabled = true;
+      this._initConfigurationViewElements();
     }
   }, {
     key: "_randomFill",
@@ -795,10 +792,8 @@ var ControllerView = /*#__PURE__*/function () {
       this._autoplayBtn.style.opacity = '1';
       this._pauseBtn.style.opacity = '1';
       this._randBtn.disabled = false;
-      this._autoplayBtn.disabled = true;
-      this._pauseBtn.disabled = true;
-      this._resetBtn.disabled = true;
-      this._stepBtn.disabled = true;
+
+      this._initConfigurationViewElements();
     }
   }, {
     key: "_onChangeNumberOfCells",

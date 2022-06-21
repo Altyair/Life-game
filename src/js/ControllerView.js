@@ -45,10 +45,7 @@ export default class ControllerView {
     }
 
     _changeNumberOfCells() {
-        this._autoplayBtn.disabled = true;
-        this._pauseBtn.disabled = true;
-        this._resetBtn.disabled = true;
-        this._stepBtn.disabled = true;
+        this._initConfigurationViewElements();
     }
 
     _randomFill() {
@@ -78,10 +75,8 @@ export default class ControllerView {
         this._autoplayBtn.style.opacity = '1';
         this._pauseBtn.style.opacity = '1';
         this._randBtn.disabled = false;
-        this._autoplayBtn.disabled = true;
-        this._pauseBtn.disabled = true;
-        this._resetBtn.disabled = true;
-        this._stepBtn.disabled = true;
+
+        this._initConfigurationViewElements();
     }
 
     _onChangeNumberOfCells (event) {
