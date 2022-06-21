@@ -711,6 +711,8 @@ var ControllerView = /*#__PURE__*/function () {
     this._findElements();
 
     this._initializeEvents();
+
+    this._initConfigurationViewElements();
   }
 
   _createClass(ControllerView, [{
@@ -726,9 +728,11 @@ var ControllerView = /*#__PURE__*/function () {
   }, {
     key: "_initializeEvents",
     value: function _initializeEvents() {
+      this._update.on('randomFill', this._randomFill.bind(this));
+
       this._update.on('play', this._playView.bind(this));
 
-      this._update.on('pause', this._stopView.bind(this));
+      this._update.on('pause', this._pauseView.bind(this));
 
       this._update.on('reset', this._resetView.bind(this));
 
@@ -745,19 +749,48 @@ var ControllerView = /*#__PURE__*/function () {
       this._pauseBtn.addEventListener('click', this._onPause.bind(this));
     }
   }, {
-    key: "_playView",
-    value: function _playView() {
-      this._numberOfCellsSelect.disabled = true;
+    key: "_initConfigurationViewElements",
+    value: function _initConfigurationViewElements() {
+      this._autoplayBtn.disabled = true;
+      this._pauseBtn.disabled = true;
+      this._resetBtn.disabled = true;
+      this._stepBtn.disabled = true;
     }
   }, {
-    key: "_stopView",
-    value: function _stopView() {
-      this._numberOfCellsSelect.disabled = false;
+    key: "_randomFill",
+    value: function _randomFill() {
+      this._autoplayBtn.disabled = false;
+      this._resetBtn.disabled = false;
+      this._stepBtn.disabled = false;
+    }
+  }, {
+    key: "_playView",
+    value: function _playView() {
+      this._autoplayBtn.style.opacity = '0.5';
+      this._pauseBtn.style.opacity = '1';
+      this._numberOfCellsSelect.disabled = true;
+      this._pauseBtn.disabled = false;
+      this._randBtn.disabled = true;
+      this._stepBtn.disabled = true;
+    }
+  }, {
+    key: "_pauseView",
+    value: function _pauseView() {
+      this._pauseBtn.style.opacity = '0.5';
+      this._autoplayBtn.style.opacity = '1';
+      this._stepBtn.disabled = false;
     }
   }, {
     key: "_resetView",
     value: function _resetView() {
       this._numberOfCellsSelect.disabled = false;
+      this._autoplayBtn.style.opacity = '1';
+      this._pauseBtn.style.opacity = '1';
+      this._randBtn.disabled = false;
+      this._autoplayBtn.disabled = true;
+      this._pauseBtn.disabled = true;
+      this._resetBtn.disabled = true;
+      this._stepBtn.disabled = true;
     }
   }, {
     key: "_onChangeNumberOfCells",
@@ -856,15 +889,15 @@ var Update = /*#__PURE__*/function (_CustomEventTarget) {
     _this._game = game;
     _this._play = false;
     _this._canPlay = false;
-
-    _this._cancelRequestAnimFrame = function () {
-      return window.cancelAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelRequestAnimationFrame || window.oCancelRequestAnimationFrame || window.msCancelRequestAnimationFrame || clearTimeout;
-    }();
-
     return _this;
   }
 
   _createClass(Update, [{
+    key: "_cancelRequestAnimFrame",
+    value: function _cancelRequestAnimFrame() {
+      return window.cancelAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelRequestAnimationFrame || window.oCancelRequestAnimationFrame || window.msCancelRequestAnimationFrame || clearTimeout;
+    }
+  }, {
     key: "canPlay",
     get: function get() {
       return this._canPlay;
@@ -880,7 +913,8 @@ var Update = /*#__PURE__*/function (_CustomEventTarget) {
   }, {
     key: "reset",
     value: function reset() {
-      cancelAnimationFrame(this._requestAnimationFrameId);
+      this._cancelRequestAnimFrame()(this._requestAnimationFrameId);
+
       this._play = false;
 
       this._game.clear();
@@ -920,6 +954,8 @@ var Update = /*#__PURE__*/function (_CustomEventTarget) {
           }
         }
       }
+
+      this._fire('randomFill');
     }
   }, {
     key: "autoplay",
@@ -942,7 +978,8 @@ var Update = /*#__PURE__*/function (_CustomEventTarget) {
   }, {
     key: "pause",
     value: function pause() {
-      cancelAnimationFrame(this._requestAnimationFrameId);
+      this._cancelRequestAnimFrame()(this._requestAnimationFrameId);
+
       this._play = false;
 
       this._fire('pause');

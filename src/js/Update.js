@@ -17,15 +17,15 @@ export default class Update extends CustomEventTarget {
         this._game = game;
         this._play = false;
         this._canPlay = false;
+    }
 
-        this._cancelRequestAnimFrame = (function() {
-            return window.cancelAnimationFrame          ||
-                window.webkitCancelRequestAnimationFrame    ||
-                window.mozCancelRequestAnimationFrame       ||
-                window.oCancelRequestAnimationFrame     ||
-                window.msCancelRequestAnimationFrame        ||
-                clearTimeout
-        })();
+    _cancelRequestAnimFrame() {
+        return window.cancelAnimationFrame          ||
+            window.webkitCancelRequestAnimationFrame    ||
+            window.mozCancelRequestAnimationFrame       ||
+            window.oCancelRequestAnimationFrame     ||
+            window.msCancelRequestAnimationFrame        ||
+            clearTimeout
     }
 
     set canPlay(value) {
@@ -41,7 +41,7 @@ export default class Update extends CustomEventTarget {
     }
 
     reset () {
-        cancelAnimationFrame(this._requestAnimationFrameId);
+        this._cancelRequestAnimFrame()(this._requestAnimationFrameId);
         this._play = false;
         this._game.clear();
 
@@ -78,6 +78,8 @@ export default class Update extends CustomEventTarget {
                 }
             }
         }
+
+        this._fire('randomFill');
     };
 
     autoplay () {
@@ -94,7 +96,7 @@ export default class Update extends CustomEventTarget {
     };
 
     pause () {
-        cancelAnimationFrame(this._requestAnimationFrameId);
+        this._cancelRequestAnimFrame()(this._requestAnimationFrameId);
         this._play = false;
 
         this._fire('pause');

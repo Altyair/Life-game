@@ -10,6 +10,7 @@ export default class ControllerView {
         this._update = update;
         this._findElements();
         this._initializeEvents();
+        this._initConfigurationViewElements();
     }
 
     _findElements() {
@@ -22,8 +23,9 @@ export default class ControllerView {
     }
 
     _initializeEvents() {
+        this._update.on('randomFill', this._randomFill.bind(this));
         this._update.on('play', this._playView.bind(this));
-        this._update.on('pause', this._stopView.bind(this));
+        this._update.on('pause', this._pauseView.bind(this));
         this._update.on('reset', this._resetView.bind(this));
 
         this._numberOfCellsSelect.addEventListener('change', this._onChangeNumberOfCells.bind(this));
@@ -34,16 +36,44 @@ export default class ControllerView {
         this._pauseBtn.addEventListener('click', this._onPause.bind(this));
     }
 
-    _playView() {
-        this._numberOfCellsSelect.disabled = true;
+    _initConfigurationViewElements() {
+        this._autoplayBtn.disabled = true;
+        this._pauseBtn.disabled = true;
+        this._resetBtn.disabled = true;
+        this._stepBtn.disabled = true;
     }
 
-    _stopView() {
-        this._numberOfCellsSelect.disabled = false;
+    _randomFill() {
+        this._autoplayBtn.disabled = false;
+        this._resetBtn.disabled = false;
+        this._stepBtn.disabled = false;
+    }
+
+    _playView() {
+        this._autoplayBtn.style.opacity = '0.5';
+        this._pauseBtn.style.opacity = '1';
+        this._numberOfCellsSelect.disabled = true;
+        this._pauseBtn.disabled = false;
+        this._randBtn.disabled = true;
+        this._stepBtn.disabled = true;
+
+    }
+
+    _pauseView() {
+        this._pauseBtn.style.opacity = '0.5';
+        this._autoplayBtn.style.opacity = '1';
+        this._stepBtn.disabled = false;
     }
 
     _resetView() {
         this._numberOfCellsSelect.disabled = false;
+        this._autoplayBtn.style.opacity = '1';
+        this._pauseBtn.style.opacity = '1';
+        this._randBtn.disabled = false;
+        this._autoplayBtn.disabled = true;
+        this._pauseBtn.disabled = true;
+        this._resetBtn.disabled = true;
+        this._stepBtn.disabled = true;
     }
 
     _onChangeNumberOfCells (event) {
