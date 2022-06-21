@@ -15,14 +15,7 @@ export default class GameFacade {
 
     create() {
         const grid = new Grid({name: 'back'});
-        grid.setSize();
-        grid.setSizeX();
-        grid.setSizeY();
-        grid.draw();
-        grid.fill();
-
         const game = new Game({name: 'game'});
-        game.setSize();
 
         const update = new Update(grid, game);
         update.canPlay = true;

@@ -23,6 +23,7 @@ export default class ControllerView {
     }
 
     _initializeEvents() {
+        this._update.on('change_number_of_cells', this._changeNumberOfCells.bind(this));
         this._update.on('randomFill', this._randomFill.bind(this));
         this._update.on('play', this._playView.bind(this));
         this._update.on('pause', this._pauseView.bind(this));
@@ -37,6 +38,13 @@ export default class ControllerView {
     }
 
     _initConfigurationViewElements() {
+        this._autoplayBtn.disabled = true;
+        this._pauseBtn.disabled = true;
+        this._resetBtn.disabled = true;
+        this._stepBtn.disabled = true;
+    }
+
+    _changeNumberOfCells() {
         this._autoplayBtn.disabled = true;
         this._pauseBtn.disabled = true;
         this._resetBtn.disabled = true;

@@ -2,8 +2,6 @@ import CONFIG from '../config.json';
 import Canvas from "./Canvas";
 import Data from "./Data";
 
-const CELL_SIZE = CONFIG.CELL_SIZE;
-
 /**
  * Creates an instance Grid.
  *
@@ -19,16 +17,21 @@ export default class Grid extends Canvas {
         this._size = { x : 0, y : 0 };
 
         this._initializeEvents();
+        this._setConfiguration();
     }
 
     _initializeEvents () {
         this._data.on('changeNumberOfCells', () => {
-            this.setSize();
-            this.setSizeX();
-            this.setSizeY();
-            this.draw();
-            this.fill();
+            this._setConfiguration();
         });
+    }
+
+    _setConfiguration() {
+        this.setSize();
+        this.setSizeX();
+        this.setSizeY();
+        this.draw();
+        this.fill();
     }
 
     setSizeX() {

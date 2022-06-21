@@ -13,6 +13,7 @@ export default class Game extends Canvas {
         super(props);
 
         this._data = Data.getInstance();
+        this.setSize();
         this._initializeEvents();
     }
 

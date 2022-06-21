@@ -38,6 +38,8 @@ export default class Update extends CustomEventTarget {
 
     updateNumberOfCells(value) {
         this._data.numberOfCells = value;
+
+        this._fire('change_number_of_cells');
     }
 
     reset () {

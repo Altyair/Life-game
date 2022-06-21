@@ -174,15 +174,9 @@ var GameFacade = /*#__PURE__*/function () {
       var grid = new _Grid__WEBPACK_IMPORTED_MODULE_0__["default"]({
         name: 'back'
       });
-      grid.setSize();
-      grid.setSizeX();
-      grid.setSizeY();
-      grid.draw();
-      grid.fill();
       var game = new _Game__WEBPACK_IMPORTED_MODULE_1__["default"]({
         name: 'game'
       });
-      game.setSize();
       var update = new _Update__WEBPACK_IMPORTED_MODULE_3__["default"](grid, game);
       update.canPlay = true;
       return new _ControllerView__WEBPACK_IMPORTED_MODULE_2__["default"](update);
@@ -230,7 +224,6 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
-var CELL_SIZE = _config_json__WEBPACK_IMPORTED_MODULE_0__.CELL_SIZE;
 /**
  * Creates an instance Grid.
  *
@@ -258,6 +251,8 @@ var Grid = /*#__PURE__*/function (_Canvas) {
 
     _this._initializeEvents();
 
+    _this._setConfiguration();
+
     return _this;
   }
 
@@ -267,16 +262,17 @@ var Grid = /*#__PURE__*/function (_Canvas) {
       var _this2 = this;
 
       this._data.on('changeNumberOfCells', function () {
-        _this2.setSize();
-
-        _this2.setSizeX();
-
-        _this2.setSizeY();
-
-        _this2.draw();
-
-        _this2.fill();
+        _this2._setConfiguration();
       });
+    }
+  }, {
+    key: "_setConfiguration",
+    value: function _setConfiguration() {
+      this.setSize();
+      this.setSizeX();
+      this.setSizeY();
+      this.draw();
+      this.fill();
     }
   }, {
     key: "setSizeX",
@@ -346,7 +342,7 @@ var Grid = /*#__PURE__*/function (_Canvas) {
 /* 3 */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"CELL_SIZE\":2}");
+module.exports = JSON.parse("{}");
 
 /***/ }),
 /* 4 */
@@ -661,6 +657,8 @@ var Game = /*#__PURE__*/function (_Canvas) {
     _this = _super.call(this, props);
     _this._data = _Data__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance();
 
+    _this.setSize();
+
     _this._initializeEvents();
 
     return _this;
@@ -728,6 +726,8 @@ var ControllerView = /*#__PURE__*/function () {
   }, {
     key: "_initializeEvents",
     value: function _initializeEvents() {
+      this._update.on('change_number_of_cells', this._changeNumberOfCells.bind(this));
+
       this._update.on('randomFill', this._randomFill.bind(this));
 
       this._update.on('play', this._playView.bind(this));
@@ -751,6 +751,14 @@ var ControllerView = /*#__PURE__*/function () {
   }, {
     key: "_initConfigurationViewElements",
     value: function _initConfigurationViewElements() {
+      this._autoplayBtn.disabled = true;
+      this._pauseBtn.disabled = true;
+      this._resetBtn.disabled = true;
+      this._stepBtn.disabled = true;
+    }
+  }, {
+    key: "_changeNumberOfCells",
+    value: function _changeNumberOfCells() {
       this._autoplayBtn.disabled = true;
       this._pauseBtn.disabled = true;
       this._resetBtn.disabled = true;
@@ -909,6 +917,8 @@ var Update = /*#__PURE__*/function (_CustomEventTarget) {
     key: "updateNumberOfCells",
     value: function updateNumberOfCells(value) {
       this._data.numberOfCells = value;
+
+      this._fire('change_number_of_cells');
     }
   }, {
     key: "reset",
