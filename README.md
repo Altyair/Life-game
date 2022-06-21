@@ -4,7 +4,7 @@
 
 ## Запуск
 
-### Запуск готовой сборки (в репе уже лежит собранный bundle.js)
+### Запуск готовой сборки (в репозитории уже лежит собранный bundle.js)
 
 * Склонировать проект: git clone https://github.com/Altyair/Life-game либо скачать проект из репозитория https://github.com/Altyair/Life-game
 * В корневой директории public уже лежит сборка bundle.js

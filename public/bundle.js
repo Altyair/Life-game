@@ -179,7 +179,6 @@ var GameFacade = /*#__PURE__*/function () {
       });
       var update = new _Update__WEBPACK_IMPORTED_MODULE_3__["default"](grid, game);
       update.canPlay = true;
-      console.log(888);
       return new _ControllerView__WEBPACK_IMPORTED_MODULE_2__["default"](update);
     }
   }]);
