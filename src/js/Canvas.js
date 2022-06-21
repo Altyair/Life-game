@@ -19,7 +19,7 @@ export default class Canvas {
     }
 
     setSize() {
-        const size = this._data.numberOfCells * this._data.cellSize;
+        const size = this._data.numberOfCells * this._data.cellSize + 1;
         this._canvasWrapper.width = size;
         this._canvasWrapper.height = size;
         this._canvas.width = size;

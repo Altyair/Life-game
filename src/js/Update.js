@@ -1,7 +1,6 @@
 import CONFIG from '../config.json';
 import Data from "./Data";
-
-const CELL_SIZE = CONFIG.CELL_SIZE;
+import CustomEventTarget from './CustomEventTarget';
 
 /**
  * Creates an instance Update.
@@ -10,11 +9,22 @@ const CELL_SIZE = CONFIG.CELL_SIZE;
  * @this {Update}
  *
  */
-export default class Update {
+export default class Update extends CustomEventTarget {
     constructor(grid, game) {
+        super();
         this._data = Data.getInstance();
         this._grid = grid;
         this._game = game;
+        this._play = false;
+        this._canPlay = false;
+    }
+
+    set canPlay(value) {
+        this._canPlay = value;
+    }
+
+    get canPlay() {
+        return this._canPlay;
     }
 
     updateNumberOfCells(value) {
@@ -63,7 +73,11 @@ export default class Update {
             requestAnimationFrame(play);
         }
 
-        play();
+        if (this._canPlay) {
+            play();
+            this._play = true;
+            this._fire('play');
+        }
     };
 
     stop () {

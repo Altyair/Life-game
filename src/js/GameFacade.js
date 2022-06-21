@@ -25,6 +25,7 @@ export default class GameFacade {
         game.setSize();
 
         const update = new Update(grid, game);
+        update.canPlay = true;
         return new ControllerView(update);
     }
 }

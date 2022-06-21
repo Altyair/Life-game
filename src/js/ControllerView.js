@@ -22,13 +22,13 @@ export default class ControllerView {
     }
 
     _initializeEvents() {
+        this._update.on('play', this._playView.bind(this));
+
         this._numberOfCellsSelect.addEventListener('change', (event) => {
             this._update.updateNumberOfCells(parseInt(event.target.value, 10));
         });
 
-        this._clearBtn.addEventListener('click', () => {
-            this._update.clear();
-        });
+        this._clearBtn.addEventListener('click', this._onClear.bind(this));
 
         this._randBtn.addEventListener('click', () => {
             this._update.randomFill();
@@ -45,5 +45,13 @@ export default class ControllerView {
         this._stopBtn.addEventListener('click', () => {
             this._update.stop();
         });
+    }
+
+    _playView() {
+        this._numberOfCellsSelect.disabled = true;
+    }
+
+    _onClear (event) {
+        this._update.clear();
     }
 }

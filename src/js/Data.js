@@ -26,6 +26,15 @@ export default class Data extends CustomEventTarget {
     }
 
     set numberOfCells(value) {
+        if (value < 100) {
+            this._cellSize = 20;
+        } else if (value < 500) {
+            this._cellSize = 8;
+        } else if (value < 1000) {
+            this._cellSize = 4;
+        } else {
+            this._cellSize = 2;
+        }
         this._numberOfCells = value;
 
         this._fire('changeNumberOfCells', {value});

@@ -65,16 +65,17 @@ export default class Grid extends Canvas {
         const canvas = this.getCanvas();
         canvas.translate(0.5, 0.5);
         canvas.beginPath();
+
         for (let i = 0; i <= this._size.x; i += 1) {
             canvas.moveTo(0, i * this._data.cellSize);
             canvas.lineWidth = 1;
             canvas.lineTo(this.getWidth(), i * this._data.cellSize);
-            canvas.strokeStyle = "#ddd";
+            canvas.strokeStyle = "gray";
 
             canvas.lineWidth = 1;
             canvas.moveTo(i * this._data.cellSize, 0);
             canvas.lineTo(i * this._data.cellSize, this.getHeight());
-            canvas.strokeStyle = "#ddd";
+            canvas.strokeStyle = "gray";
         }
         this.getCanvas().stroke();
     };
