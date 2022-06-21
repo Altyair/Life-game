@@ -19,6 +19,7 @@ export default class GameFacade {
 
         const update = new Update(grid, game);
         update.canPlay = true;
+
         return new ControllerView(update);
     }
 }
