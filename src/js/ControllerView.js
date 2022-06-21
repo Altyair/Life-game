@@ -18,9 +18,14 @@ export default class ControllerView {
         this._stepBtn = document.getElementById('step');
         this._autoplayBtn = document.getElementById('autoplay');
         this._stopBtn = document.getElementById('stop');
+        this._numberOfCellsSelect = document.getElementById('number_of_cells');
     }
 
     _initializeEvents() {
+        this._numberOfCellsSelect.addEventListener('change', (event) => {
+            this._update.updateNumberOfCells(parseInt(event.target.value, 10));
+        });
+
         this._clearBtn.addEventListener('click', () => {
             this._update.clear();
         });

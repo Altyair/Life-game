@@ -1,3 +1,5 @@
+import CustomEventTarget from './CustomEventTarget';
+
 /**
  * Creates an instance Data.
  *
@@ -5,15 +7,36 @@
  * @this {Data}
  *
  */
-export default class Data {
+export default class Data extends CustomEventTarget {
     constructor() {
         if (Data._instance) {
             return Data._instance;
         }
+        super();
         Data._instance = this;
 
         this._cells = [];
         this._buffCells = [];
+        this._numberOfCells = 25;
+        this._cellSize = 8;
+    }
+
+    get numberOfCells() {
+        return this._numberOfCells;
+    }
+
+    set numberOfCells(value) {
+        this._numberOfCells = value;
+
+        this._fire('changeNumberOfCells', {value});
+    }
+
+    get cellSize() {
+        return this._cellSize;
+    }
+
+    set cellSize(value) {
+        this._cellSize = value;
     }
 
     static getInstance() {

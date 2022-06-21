@@ -20,11 +20,11 @@ export default class Grid extends Canvas {
     }
 
     setSizeX() {
-        this._size.x = parseInt(this.getWidth() / CELL_SIZE, 10);
+        this._size.x = this._data.numberOfCells;
     }
 
     setSizeY() {
-        this._size.y = parseInt(this.getHeight() / CELL_SIZE, 10);
+        this._size.y = this._data.numberOfCells;
     }
 
     getSizeX() {
@@ -39,10 +39,10 @@ export default class Grid extends Canvas {
         const cells = this._data.getCells();
         const buffCells = this._data.getBuffCells();
 
-        for (let i = 0; i < this.getSizeX(); i += 1) {
+        for (let i = 0; i < this._size.x; i += 1) {
             cells[i] = [];
             buffCells[i] = [];
-            for (let j = 0; j < this.getSizeY(); j += 1) {
+            for (let j = 0; j <  this._size.y; j += 1) {
                 cells[i][j] = false;
                 buffCells[i][j] = false;
             }
@@ -51,21 +51,19 @@ export default class Grid extends Canvas {
 
     draw() {
         const canvas = this.getCanvas();
-
         canvas.translate(0.5, 0.5);
         canvas.beginPath();
-        for (let i = 0; i <= this.getSizeX(); i += 1) {
-            canvas.moveTo(0, i * CELL_SIZE);
+        for (let i = 0; i <= this._size.x; i += 1) {
+            canvas.moveTo(0, i * this._data.cellSize);
             canvas.lineWidth = 1;
-            canvas.lineTo(this.getWidth(), i * CELL_SIZE);
+            canvas.lineTo(this.getWidth(), i * this._data.cellSize);
             canvas.strokeStyle = "#ddd";
 
             canvas.lineWidth = 1;
-            canvas.moveTo(i * CELL_SIZE, 0);
-            canvas.lineTo(i * CELL_SIZE, this.getHeight());
+            canvas.moveTo(i * this._data.cellSize, 0);
+            canvas.lineTo(i * this._data.cellSize, this.getHeight());
             canvas.strokeStyle = "#ddd";
         }
-
         this.getCanvas().stroke();
     };
 }

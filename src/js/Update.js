@@ -17,8 +17,12 @@ export default class Update {
         this._game = game;
     }
 
+    updateNumberOfCells(value) {
+        this._data.numberOfCells = value;
+    }
+
     clear () {
-        this._game.getCanvas().clearRect(0, 0, this._grid.getWidth(), this._grid.getHeight());
+        this._game.clear();
     };
 
     fill () {
@@ -67,7 +71,7 @@ export default class Update {
     };
 
     _fillCell (x, y) {
-        this._game.getCanvas().fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE + 1, CELL_SIZE + 1);
+        this._game.getCanvas().fillRect(x * this._data.cellSize, y * this._data.cellSize, this._data.cellSize + 1, this._data.cellSize + 1);
     };
 
     _getLivingNeighbors (x, y) {

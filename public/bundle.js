@@ -142,14 +142,16 @@ window.onload = function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return GameFacade; });
 /* harmony import */ var _Grid__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
-/* harmony import */ var _ControllerView__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
-/* harmony import */ var _Update__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7);
+/* harmony import */ var _ControllerView__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7);
+/* harmony import */ var _Update__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8);
 /* harmony import */ var _Canvas__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
+/* harmony import */ var _Data__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(5);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
 
 
 
@@ -171,15 +173,26 @@ var GameFacade = /*#__PURE__*/function () {
   _createClass(GameFacade, [{
     key: "create",
     value: function create() {
+      var data = _Data__WEBPACK_IMPORTED_MODULE_4__["default"].getInstance();
       var grid = new _Grid__WEBPACK_IMPORTED_MODULE_0__["default"]({
         name: 'back'
       });
+      grid.setSize();
       grid.setSizeX();
       grid.setSizeY();
       grid.draw();
       grid.fill();
       var game = new _Canvas__WEBPACK_IMPORTED_MODULE_3__["default"]({
         name: 'game'
+      });
+      game.setSize();
+      data.on('changeNumberOfCells', function () {
+        grid.setSize();
+        grid.setSizeX();
+        grid.setSizeY();
+        grid.draw();
+        grid.fill();
+        game.setSize();
       });
       var update = new _Update__WEBPACK_IMPORTED_MODULE_2__["default"](grid, game);
       return new _ControllerView__WEBPACK_IMPORTED_MODULE_1__["default"](update);
@@ -258,12 +271,12 @@ var Grid = /*#__PURE__*/function (_Canvas) {
   _createClass(Grid, [{
     key: "setSizeX",
     value: function setSizeX() {
-      this._size.x = parseInt(this.getWidth() / CELL_SIZE, 10);
+      this._size.x = this._data.numberOfCells;
     }
   }, {
     key: "setSizeY",
     value: function setSizeY() {
-      this._size.y = parseInt(this.getHeight() / CELL_SIZE, 10);
+      this._size.y = this._data.numberOfCells;
     }
   }, {
     key: "getSizeX",
@@ -282,11 +295,11 @@ var Grid = /*#__PURE__*/function (_Canvas) {
 
       var buffCells = this._data.getBuffCells();
 
-      for (var i = 0; i < this.getSizeX(); i += 1) {
+      for (var i = 0; i < this._size.x; i += 1) {
         cells[i] = [];
         buffCells[i] = [];
 
-        for (var j = 0; j < this.getSizeY(); j += 1) {
+        for (var j = 0; j < this._size.y; j += 1) {
           cells[i][j] = false;
           buffCells[i][j] = false;
         }
@@ -299,14 +312,14 @@ var Grid = /*#__PURE__*/function (_Canvas) {
       canvas.translate(0.5, 0.5);
       canvas.beginPath();
 
-      for (var i = 0; i <= this.getSizeX(); i += 1) {
-        canvas.moveTo(0, i * CELL_SIZE);
+      for (var i = 0; i <= this._size.x; i += 1) {
+        canvas.moveTo(0, i * this._data.cellSize);
         canvas.lineWidth = 1;
-        canvas.lineTo(this.getWidth(), i * CELL_SIZE);
+        canvas.lineTo(this.getWidth(), i * this._data.cellSize);
         canvas.strokeStyle = "#ddd";
         canvas.lineWidth = 1;
-        canvas.moveTo(i * CELL_SIZE, 0);
-        canvas.lineTo(i * CELL_SIZE, this.getHeight());
+        canvas.moveTo(i * this._data.cellSize, 0);
+        canvas.lineTo(i * this._data.cellSize, this.getHeight());
         canvas.strokeStyle = "#ddd";
       }
 
@@ -323,7 +336,7 @@ var Grid = /*#__PURE__*/function (_Canvas) {
 /* 3 */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"CELL_SIZE\":8}");
+module.exports = JSON.parse("{\"CELL_SIZE\":2}");
 
 /***/ }),
 /* 4 */
@@ -332,11 +345,13 @@ module.exports = JSON.parse("{\"CELL_SIZE\":8}");
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Canvas; });
+/* harmony import */ var _Data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
 
 /**
  * Creates an instance Canvas.
@@ -345,9 +360,12 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  * @this {Canvas}
  *
  */
+
 var Canvas = /*#__PURE__*/function () {
   function Canvas(options) {
     _classCallCheck(this, Canvas);
+
+    this._data = _Data__WEBPACK_IMPORTED_MODULE_0__["default"].getInstance();
 
     if (options === undefined || options.name === undefined) {
       throw new Error('Canvas tag name not passed');
@@ -358,6 +376,15 @@ var Canvas = /*#__PURE__*/function () {
   }
 
   _createClass(Canvas, [{
+    key: "setSize",
+    value: function setSize() {
+      var size = this._data.numberOfCells * this._data.cellSize;
+      this._canvasWrapper.width = size;
+      this._canvasWrapper.height = size;
+      this._canvas.width = size;
+      this._canvas.height = size;
+    }
+  }, {
     key: "getCanvas",
     value: function getCanvas() {
       return this._canvas;
@@ -371,6 +398,11 @@ var Canvas = /*#__PURE__*/function () {
     key: "getHeight",
     value: function getHeight() {
       return this._canvasWrapper.height;
+    }
+  }, {
+    key: "clear",
+    value: function clear() {
+      this._canvas.clearRect(0, 0, this._canvasWrapper.width, this._canvasWrapper.height);
     }
   }]);
 
@@ -386,11 +418,29 @@ var Canvas = /*#__PURE__*/function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Data; });
+/* harmony import */ var _CustomEventTarget__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
 
 /**
  * Creates an instance Data.
@@ -399,20 +449,51 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  * @this {Data}
  *
  */
-var Data = /*#__PURE__*/function () {
+
+var Data = /*#__PURE__*/function (_CustomEventTarget) {
+  _inherits(Data, _CustomEventTarget);
+
+  var _super = _createSuper(Data);
+
   function Data() {
+    var _this;
+
     _classCallCheck(this, Data);
 
     if (Data._instance) {
-      return Data._instance;
+      return _possibleConstructorReturn(_this, Data._instance);
     }
 
-    Data._instance = this;
-    this._cells = [];
-    this._buffCells = [];
+    _this = _super.call(this);
+    Data._instance = _assertThisInitialized(_this);
+    _this._cells = [];
+    _this._buffCells = [];
+    _this._numberOfCells = 25;
+    _this._cellSize = 8;
+    return _this;
   }
 
   _createClass(Data, [{
+    key: "numberOfCells",
+    get: function get() {
+      return this._numberOfCells;
+    },
+    set: function set(value) {
+      this._numberOfCells = value;
+
+      this._fire('changeNumberOfCells', {
+        value: value
+      });
+    }
+  }, {
+    key: "cellSize",
+    get: function get() {
+      return this._cellSize;
+    },
+    set: function set(value) {
+      this._cellSize = value;
+    }
+  }, {
     key: "setCells",
     value: function setCells(cells) {
       this._cells = cells;
@@ -440,12 +521,74 @@ var Data = /*#__PURE__*/function () {
   }]);
 
   return Data;
-}();
+}(_CustomEventTarget__WEBPACK_IMPORTED_MODULE_0__["default"]);
 
 
 
 /***/ }),
 /* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/**
+ * Creates an instance CustomEventTarget.
+ *
+ * @constructor
+ * @this {CustomEventTarget}
+ *
+ */
+function CustomEventTarget() {
+  this._events = {};
+}
+
+CustomEventTarget.prototype = {
+  constructor: CustomEventTarget,
+  on: function on(eventType, listener) {
+    var events = this._events,
+        listeners;
+
+    if (eventType in events) {
+      listeners = events[eventType];
+
+      if (listeners.indexOf(listener) === -1) {
+        listeners.push(listener);
+      }
+    } else {
+      events[eventType] = [listener];
+    }
+  },
+  off: function off(eventType, listener) {
+    var events = this._events,
+        listeners;
+
+    if (eventType in events) {
+      listeners = events[eventType];
+      var pos = listeners.indexOf(listener);
+
+      if (pos !== -1) {
+        listeners.splice(pos, 1);
+      }
+    }
+  },
+  _fire: function _fire(eventType, detail) {
+    var listeners = this._events[eventType];
+
+    if (listeners) {
+      var event = {
+        type: eventType,
+        detail: detail
+      };
+      listeners.forEach(function (listener) {
+        listener.call(this, event);
+      }, this);
+    }
+  }
+};
+/* harmony default export */ __webpack_exports__["default"] = (CustomEventTarget);
+
+/***/ }),
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -483,11 +626,16 @@ var ControllerView = /*#__PURE__*/function () {
       this._stepBtn = document.getElementById('step');
       this._autoplayBtn = document.getElementById('autoplay');
       this._stopBtn = document.getElementById('stop');
+      this._numberOfCellsSelect = document.getElementById('number_of_cells');
     }
   }, {
     key: "_initializeEvents",
     value: function _initializeEvents() {
       var _this = this;
+
+      this._numberOfCellsSelect.addEventListener('change', function (event) {
+        _this._update.updateNumberOfCells(parseInt(event.target.value, 10));
+      });
 
       this._clearBtn.addEventListener('click', function () {
         _this._update.clear();
@@ -517,7 +665,7 @@ var ControllerView = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -553,9 +701,14 @@ var Update = /*#__PURE__*/function () {
   }
 
   _createClass(Update, [{
+    key: "updateNumberOfCells",
+    value: function updateNumberOfCells(value) {
+      this._data.numberOfCells = value;
+    }
+  }, {
     key: "clear",
     value: function clear() {
-      this._game.getCanvas().clearRect(0, 0, this._grid.getWidth(), this._grid.getHeight());
+      this._game.clear();
     }
   }, {
     key: "fill",
@@ -610,7 +763,7 @@ var Update = /*#__PURE__*/function () {
   }, {
     key: "_fillCell",
     value: function _fillCell(x, y) {
-      this._game.getCanvas().fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE + 1, CELL_SIZE + 1);
+      this._game.getCanvas().fillRect(x * this._data.cellSize, y * this._data.cellSize, this._data.cellSize + 1, this._data.cellSize + 1);
     }
   }, {
     key: "_getLivingNeighbors",

@@ -6,14 +6,41 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <canvas id="back" width="1401" height="617" ></canvas>
-    <canvas id="game" width="1401" height="617" ></canvas>
-    <br>
+    <select id="number_of_cells">
+        <option selected disabled>select the number of cells in width</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="200">200</option>
+        <option value="300">300</option>
+        <option value="400">400</option>
+        <option value="500">500</option>
+        <option value="600">600</option>
+        <option value="700">700</option>
+        <option value="800">800</option>
+        <option value="900">900</option>
+        <option value="1000">1000</option>
+        <option value="1100">1100</option>
+        <option value="1200">1200</option>
+        <option value="1300">1300</option>
+        <option value="1400">1400</option>
+        <option value="1500">1500</option>
+        <option value="1600">1600</option>
+        <option value="1700">1700</option>
+        <option value="1800">1800</option>
+        <option value="1900">1900</option>
+        <option value="2000">2000</option>
+    </select>
     <input type="button" id="clear" value="reset">
     <input type="button" id="rand" value="first generation">
     <input type="button" id="step" value="next step">
     <input type="button" id="autoplay" value="play">
+    <input type="button" id="pause" value="pause">
     <input type="button" id="stop" value="stop">
+    <br>
+    <br>
+    <canvas id="back"></canvas>
+    <canvas id="game"></canvas>
 
     <script src="./bundle.js" type="text/javascript"></script>
 </body>
