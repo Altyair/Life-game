@@ -142,16 +142,14 @@ window.onload = function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return GameFacade; });
 /* harmony import */ var _Grid__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
-/* harmony import */ var _ControllerView__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7);
-/* harmony import */ var _Update__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8);
-/* harmony import */ var _Canvas__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
-/* harmony import */ var _Data__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(5);
+/* harmony import */ var _Game__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7);
+/* harmony import */ var _ControllerView__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8);
+/* harmony import */ var _Update__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-
 
 
 
@@ -173,7 +171,6 @@ var GameFacade = /*#__PURE__*/function () {
   _createClass(GameFacade, [{
     key: "create",
     value: function create() {
-      var data = _Data__WEBPACK_IMPORTED_MODULE_4__["default"].getInstance();
       var grid = new _Grid__WEBPACK_IMPORTED_MODULE_0__["default"]({
         name: 'back'
       });
@@ -182,20 +179,12 @@ var GameFacade = /*#__PURE__*/function () {
       grid.setSizeY();
       grid.draw();
       grid.fill();
-      var game = new _Canvas__WEBPACK_IMPORTED_MODULE_3__["default"]({
+      var game = new _Game__WEBPACK_IMPORTED_MODULE_1__["default"]({
         name: 'game'
       });
       game.setSize();
-      data.on('changeNumberOfCells', function () {
-        grid.setSize();
-        grid.setSizeX();
-        grid.setSizeY();
-        grid.draw();
-        grid.fill();
-        game.setSize();
-      });
-      var update = new _Update__WEBPACK_IMPORTED_MODULE_2__["default"](grid, game);
-      return new _ControllerView__WEBPACK_IMPORTED_MODULE_1__["default"](update);
+      var update = new _Update__WEBPACK_IMPORTED_MODULE_3__["default"](grid, game);
+      return new _ControllerView__WEBPACK_IMPORTED_MODULE_2__["default"](update);
     }
   }]);
 
@@ -265,10 +254,30 @@ var Grid = /*#__PURE__*/function (_Canvas) {
       x: 0,
       y: 0
     };
+
+    _this._initializeEvents();
+
     return _this;
   }
 
   _createClass(Grid, [{
+    key: "_initializeEvents",
+    value: function _initializeEvents() {
+      var _this2 = this;
+
+      this._data.on('changeNumberOfCells', function () {
+        _this2.setSize();
+
+        _this2.setSizeX();
+
+        _this2.setSizeY();
+
+        _this2.draw();
+
+        _this2.fill();
+      });
+    }
+  }, {
     key: "setSizeX",
     value: function setSizeX() {
       this._size.x = this._data.numberOfCells;
@@ -469,7 +478,7 @@ var Data = /*#__PURE__*/function (_CustomEventTarget) {
     _this._cells = [];
     _this._buffCells = [];
     _this._numberOfCells = 25;
-    _this._cellSize = 8;
+    _this._cellSize = 20;
     return _this;
   }
 
@@ -593,6 +602,81 @@ CustomEventTarget.prototype = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Game; });
+/* harmony import */ var _Canvas__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
+/* harmony import */ var _Data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+
+
+/**
+ * Creates an instance Game.
+ *
+ * @constructor
+ * @this {Game}
+ *
+ */
+
+var Game = /*#__PURE__*/function (_Canvas) {
+  _inherits(Game, _Canvas);
+
+  var _super = _createSuper(Game);
+
+  function Game(props) {
+    var _this;
+
+    _classCallCheck(this, Game);
+
+    _this = _super.call(this, props);
+    _this._data = _Data__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance();
+
+    _this._initializeEvents();
+
+    return _this;
+  }
+
+  _createClass(Game, [{
+    key: "_initializeEvents",
+    value: function _initializeEvents() {
+      var _this2 = this;
+
+      this._data.on('changeNumberOfCells', function () {
+        _this2.setSize();
+      });
+    }
+  }]);
+
+  return Game;
+}(_Canvas__WEBPACK_IMPORTED_MODULE_0__["default"]);
+
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return ControllerView; });
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -665,7 +749,7 @@ var ControllerView = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

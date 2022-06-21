@@ -18,7 +18,7 @@ export default class Data extends CustomEventTarget {
         this._cells = [];
         this._buffCells = [];
         this._numberOfCells = 25;
-        this._cellSize = 8;
+        this._cellSize = 20;
     }
 
     get numberOfCells() {

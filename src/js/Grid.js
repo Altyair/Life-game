@@ -17,6 +17,18 @@ export default class Grid extends Canvas {
 
         this._data = Data.getInstance();
         this._size = { x : 0, y : 0 };
+
+        this._initializeEvents();
+    }
+
+    _initializeEvents () {
+        this._data.on('changeNumberOfCells', () => {
+            this.setSize();
+            this.setSizeX();
+            this.setSizeY();
+            this.draw();
+            this.fill();
+        });
     }
 
     setSizeX() {
